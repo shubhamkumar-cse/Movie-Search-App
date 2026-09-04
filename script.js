@@ -2,35 +2,30 @@ const movieInput = document.getElementById("movieInput");
 const searchBtn = document.getElementById("searchBtn");
 const movieResult = document.getElementById("movieResult");
 
-const API_KEY = "YOUR_API_KEY";
+// The OMDb API key stays on the Vercel server, not in this public frontend.
+const API_BASE_URL = "https://YOUR-VERCEL-PROJECT.vercel.app/api/movie";
 
 searchBtn.addEventListener("click", searchMovie);
 
 movieInput.addEventListener("keydown", (event) => {
-
     if (event.key === "Enter") {
         searchMovie();
     }
-
 });
 
 async function searchMovie() {
-
     const movieName = movieInput.value.trim();
 
     if (movieName === "") {
-
         movieResult.innerHTML = `
             <div class="error">
                 Please enter a movie name.
             </div>
         `;
-
         return;
     }
 
     try {
-
         movieResult.innerHTML = `
             <div class="loading">
                 🎬 Searching for "${movieName}"...
@@ -41,7 +36,7 @@ async function searchMovie() {
         searchBtn.textContent = "Searching...";
 
         const response = await fetch(
-            `https://www.omdbapi.com/?apikey=${API_KEY}&t=${encodeURIComponent(movieName)}`
+            `${API_BASE_URL}?title=${encodeURIComponent(movieName)}`
         );
 
         if (!response.ok) {
@@ -55,35 +50,26 @@ async function searchMovie() {
         }
 
         displayMovie(data);
-
     } catch (error) {
-
         movieResult.innerHTML = `
             <div class="error">
                 ❌ ${error.message}
             </div>
         `;
-
     } finally {
-
         searchBtn.disabled = false;
         searchBtn.textContent = "Search";
-
     }
-
 }
 
 function displayMovie(data) {
-
     const poster =
         data.Poster !== "N/A"
             ? data.Poster
             : "https://placehold.co/300x450?text=No+Poster";
 
     movieResult.innerHTML = `
-
         <div class="movie-card">
-
             <div>
                 <img
                     class="poster"
@@ -93,7 +79,6 @@ function displayMovie(data) {
             </div>
 
             <div class="movie-info">
-
                 <h2>${data.Title}</h2>
 
                 <p class="year">
@@ -115,36 +100,13 @@ function displayMovie(data) {
                 </p>
 
                 <div class="extra-info">
-
-                    <p>
-                        <strong>Director:</strong>
-                        ${data.Director}
-                    </p>
-
-                    <p>
-                        <strong>Actors:</strong>
-                        ${data.Actors}
-                    </p>
-
-                    <p>
-                        <strong>Writer:</strong>
-                        ${data.Writer}
-                    </p>
-
-                    <p>
-                        <strong>Awards:</strong>
-                        ${data.Awards}
-                    </p>
-
-                    <p>
-                        <strong>Box Office:</strong>
-                        ${data.BoxOffice || "N/A"}
-                    </p>
-
+                    <p><strong>Director:</strong> ${data.Director}</p>
+                    <p><strong>Actors:</strong> ${data.Actors}</p>
+                    <p><strong>Writer:</strong> ${data.Writer}</p>
+                    <p><strong>Awards:</strong> ${data.Awards}</p>
+                    <p><strong>Box Office:</strong> ${data.BoxOffice || "N/A"}</p>
                 </div>
-
             </div>
-
         </div>
     `;
 }
