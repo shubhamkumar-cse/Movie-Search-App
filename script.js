@@ -3,7 +3,7 @@ const searchBtn = document.getElementById("searchBtn");
 const movieResult = document.getElementById("movieResult");
 
 // The OMDb API key stays on the Vercel server, not in this public frontend.
-const API_BASE_URL = "https://YOUR-VERCEL-PROJECT.vercel.app/api/movie";
+const API_BASE_URL = "https://movie-search-app-seven-psi.vercel.app/api/movie";
 
 searchBtn.addEventListener("click", searchMovie);
 
